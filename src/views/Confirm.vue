@@ -70,8 +70,11 @@ export default {
                 })
         },
         emitComfirmOff(){
-            this.$emit("comfirmOff",);
+            this.$emit("comfirmOff");
         },
+        emitComfirmCancle(){
+            this.$emit("comfirmCancle");
+        }
         
     }
 }
@@ -145,7 +148,7 @@ export default {
         </div>
         <br>
         <div>
-            <input type="button" value="取消" @click="emitComfirmOff()">
+            <input type="button" value="取消" @click="emitComfirmCancle()">
             &nbsp
             <input type="button" value="僅儲存" @click="save(), emitComfirmOff()">
             &nbsp

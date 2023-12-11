@@ -20,7 +20,8 @@ export default {
             },
             titleSearch: "",
             startDateSearch: "",
-            endDateSearch: ""
+            endDateSearch: "",
+            comfirmCancleSignal:false,
         }
     },
     computed: {
@@ -88,11 +89,6 @@ export default {
         ifBackShow() {
             this.backShow = !this.backShow;
         },
-        showConfirmOff() {
-            location.reload();
-            // this.confirmShow = false;
-            // this.backShow = true;
-        },
         search() {
             fetch("http://localhost:8080/api/quiz/search1", {
                 method: "POST",
@@ -106,8 +102,8 @@ export default {
                         "endDate": this.endDateSearch,
                         "published": true
                     }
-                )
-            })
+                    )
+                })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
@@ -122,38 +118,38 @@ export default {
                 .catch(error => {
                     console.log(error);
                 })
-        },
-        getStatus(published, startDate, endDate) {
-            if (published == false) {
-                return "未發布";
-            }
-            let today = new Date();
-            let startDateObj = new Date(startDate);
-            let endDateObj = new Date(endDate);
-            if (startDateObj > today) {
-                return "未開始";
-            }
-            if (endDateObj >= today) {
-                return "進行中";
-            }
-            if (endDateObj < today) {
-                return "已結束";
-            }
-        },
-        deleteQn(){
-            let deleteQn = [];
-            for(let i=0; i < this.selectedRows.length; i++){
-                if(this.selectedRows[i] == true){
-                    deleteQn.push(i);
+            },
+            getStatus(published, startDate, endDate) {
+                if (published == false) {
+                    return "未發布";
                 }
-            }
-            fetch("http://localhost:8080/api/quiz/deleteQuestionnaire", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(deleteQn)
-            })
+                let today = new Date();
+                let startDateObj = new Date(startDate);
+                let endDateObj = new Date(endDate);
+                if (startDateObj > today) {
+                    return "未開始";
+                }
+                if (endDateObj >= today) {
+                    return "進行中";
+                }
+                if (endDateObj < today) {
+                    return "已結束";
+                }
+            },
+            deleteQn(){
+                let deleteQn = [];
+                for(let i=0; i < this.selectedRows.length; i++){
+                    if(this.selectedRows[i] == true){
+                        deleteQn.push(i);
+                    }
+                }
+                fetch("http://localhost:8080/api/quiz/deleteQuestionnaire", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(deleteQn)
+                })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
@@ -162,22 +158,35 @@ export default {
                 .catch(error => {
                     console.log(error);
                 })
-            location.reload();
-        }
-    },
-    components: {
-        AddQn,
-        Confirm
-    },
-    mounted() {
-        this.getQuizVoList();
-    },
-    watch: {
-        qn: function (qn) {
-            this.quizVo.qn = qn;
+                location.reload();
+            },
+            showConfirmOff() {
+                location.reload();
+                // this.confirmShow = false;
+                // this.backShow = true;
+            },
+            comfirmCancle(){
+                this.confirmShow = false;
+                this.comfirmCancleSignal = true;
+            },
+            comfirmCancleSuccess(){
+                this.comfirmCancleSignal = false;
+                console.log("comfirmCancleSuccess");
+            }
         },
-        quList: function (quList) {
-            this.quizVo.quList = quList;
+        components: {
+            AddQn,
+            Confirm
+        },
+        mounted() {
+            this.getQuizVoList();
+        },
+        watch: {
+            qn: function (qn) {
+                this.quizVo.qn = qn;
+            },
+            quList: function (quList) {
+                this.quizVo.quList = quList;
         },
     },
 
@@ -189,11 +198,11 @@ export default {
     <!-- {{ confirmShow }} -->
     <!-- {{ selectedRows }} -->
     <div v-show="confirmShow">
-        <Confirm :quizVo="quizVo" @comfirmOff="showConfirmOff()" />
+        <Confirm :quizVo="quizVo" @comfirmOff="showConfirmOff()" @comfirmCancle="comfirmCancle()"/>
     </div>
     <div v-show="qnShow">
         <AddQn @addQn="getEmitQn" @closeQnShow="ifQnShow(), ifBackShow()" @popQn="popQn()" @addQuList="getEmitQuList"
-            @emitConfirmShow="showConfirm()" />
+            @emitConfirmShow="showConfirm()" :comfirmCancleSignalProp="comfirmCancleSignal" @comfirmCancleSuccess="comfirmCancleSuccess()"/>
     </div>
     <div v-show="backShow">
         <div class="header">

@@ -1,6 +1,9 @@
 <script>
 import AddQu from "./AddQu.vue";
 export default {
+    props:[
+        "comfirmCancleSignalProp",
+    ],
     emits:["closeQnShow","addQn"],
     data() {
         const today = new Date();
@@ -36,7 +39,7 @@ export default {
             this.$emit("addQn",this.qn);
         },
         closeQnShow(){
-            this.$emit("closeQnShow",);
+            this.$emit("closeQnShow");
         },
         ifQuShow(){
             this.quShow = !this.quShow;
@@ -52,7 +55,10 @@ export default {
         },
         emitConfirmShow(){
             this.quShow = false;
-            this.$emit("emitConfirmShow",);
+            this.$emit("emitConfirmShow");
+        },
+        emitComfirmCancleSuccess(){
+            this.$emit("comfirmCancleSuccess");
         }
     },
     watch: {
@@ -68,6 +74,12 @@ export default {
         endDate: function (endDate) {
             this.qn.endDate = endDate;
         },
+        comfirmCancleSignalProp: function () {
+            if(this.comfirmCancleSignalProp == true){
+                this.quShow = true;
+                this.emitComfirmCancleSuccess();
+            }
+        }
     },
     components:{
         AddQu,

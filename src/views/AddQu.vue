@@ -22,10 +22,10 @@ export default {
     },
     methods: {
         closeQuShow() {
-            this.$emit("closeQuShow",);
+            this.$emit("closeQuShow");
         },
         emitPopQn() {
-            this.$emit("popQn",);
+            this.$emit("popQn");
         },
         addQu() {
             this.quList.push({ ...this.qu });
@@ -34,7 +34,7 @@ export default {
             this.$emit("emitQuList", this.quList);
         },
         emitConfirmShow() {
-            this.$emit("emitConfirmShow",);
+            this.$emit("emitConfirmShow");
         },
         deleteQu() {
             let indexesToDelete = [];
