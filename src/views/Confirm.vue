@@ -69,11 +69,11 @@ export default {
                     console.log(error);
                 })
         },
-        emitComfirmOff(){
-            this.$emit("comfirmOff");
+        emitConfirmOff(){
+            this.$emit("confirmOff");
         },
-        emitComfirmCancle(){
-            this.$emit("comfirmCancle");
+        emitConfirmCancle(){
+            this.$emit("confirmCancle");
         }
         
     }
@@ -148,11 +148,11 @@ export default {
         </div>
         <br>
         <div>
-            <input type="button" value="取消" @click="emitComfirmCancle()">
+            <input type="button" value="取消" @click="emitConfirmCancle()">
             &nbsp
-            <input type="button" value="僅儲存" @click="save(), emitComfirmOff()">
+            <input type="button" value="僅儲存" @click="save(), emitConfirmOff()">
             &nbsp
-            <input type="button" value="儲存並發布" @click="saveAndPublish(), emitComfirmOff()">
+            <input type="button" value="儲存並發布" @click="saveAndPublish(), emitConfirmOff()">
         </div>
         <br>
     </div>

@@ -2,7 +2,7 @@
 import AddQu from "./AddQu.vue";
 export default {
     props:[
-        "comfirmCancleSignalProp",
+        "confirmCancleSignalProp",
     ],
     emits:["closeQnShow","addQn"],
     data() {
@@ -57,8 +57,8 @@ export default {
             this.quShow = false;
             this.$emit("emitConfirmShow");
         },
-        emitComfirmCancleSuccess(){
-            this.$emit("comfirmCancleSuccess");
+        emitConfirmCancleSuccess(){
+            this.$emit("confirmCancleSuccess");
         }
     },
     watch: {
@@ -74,10 +74,10 @@ export default {
         endDate: function (endDate) {
             this.qn.endDate = endDate;
         },
-        comfirmCancleSignalProp: function () {
-            if(this.comfirmCancleSignalProp == true){
+        confirmCancleSignalProp: function () {
+            if(this.confirmCancleSignalProp == true){
                 this.quShow = true;
-                this.emitComfirmCancleSuccess();
+                this.emitConfirmCancleSuccess();
             }
         }
     },

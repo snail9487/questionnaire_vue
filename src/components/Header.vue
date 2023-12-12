@@ -13,8 +13,8 @@ export default {
     <nav class="nav">
         <RouterLink to="/Home">前台</RouterLink>
         <RouterLink to="/Back">後台</RouterLink>
-        <!-- <RouterLink to="/Fetch">Fetch</RouterLink>
-        <RouterLink to="/Testcopy">Testcopy</RouterLink> -->
+        <RouterLink to="/Fetch">Fetch</RouterLink>
+        <RouterLink to="/Testcopy">Testcopy</RouterLink>
     </nav>
 </template>
 

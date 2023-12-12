@@ -1,5 +1,9 @@
 <script>
     export default{
+        props: [
+            "updatableProp",
+            "selectedQuizProp",
+        ],
         data(){
             return{
 
@@ -18,3 +22,4 @@
 <style lang="scss" scoped>
 
 </style>
+

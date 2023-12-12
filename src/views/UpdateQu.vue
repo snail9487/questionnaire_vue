@@ -1,39 +1,40 @@
 <script>
 export default {
+    props: [
+        "updatableProp",
+        "updatingQuizVoProp"
+    ],
     data() {
         return {
-            quList: [],
-            quTitle: "",
-            optionType: "單選",
-            necessary: false,
-            option: "",
+            // quList: [],
+            quizVo: {
+                "questionnaire": {
+                    "id": 0,
+                    "title": "",
+                    "description": "",
+                    "published": null,
+                    "startDate": "",
+                    "endDate": ""
+                },
+                "questionList": []
+            },
+
             qu: {
                 quId: 0,    
-                quTitle: "",
+                qnId: 0,
+                qTitle: "",
                 optionType: "單選",
                 necessary: false,
                 option: "",
             },
-            selectedQu: [],
             ifEdit: false,
+            selectedQu: [],
             editedQuIndex:0 ,
         }
     },
     methods: {
-        closeQuShow() {
-            this.$emit("closeQuShow");
-        },
-        emitPopQn() {
-            this.$emit("popQn");
-        },
         addQu() {
-            this.quList.push({ ...this.qu });
-        },
-        emitQuList() {
-            this.$emit("emitQuList", this.quList);
-        },
-        emitConfirmShow() {
-            this.$emit("emitConfirmShow");
+            this.quizVo.questionList.push({ ...this.qu });
         },
         deleteQu() {
             let indexesToDelete = [];
@@ -44,68 +45,65 @@ export default {
             }
             for (let i = indexesToDelete.length - 1; i >= 0; i--) {
                 let index = indexesToDelete[i];
-                this.quList.splice(index, 1);
+                this.quizVo.questionList.splice(index, 1);
             }
             this.selectedQu = [];
         },
-        edit(index, quTitle, optionType, necessary, option) {
+        edit(index, qTitle, optionType, necessary, option) {
             this.ifEdit = true;
-            this.quTitle = quTitle;
-            this.optionType = optionType;
-            this.necessary = necessary;
-            this.option = option;
+            this.qu.qTitle = qTitle;
+            this.qu.optionType = optionType;
+            this.qu.necessary = necessary;
+            this.qu.option = option;
             this.editedQuIndex = index;
 
         },
         editDone(){
-            this.quList[this.editedQuIndex] = {...this.qu};
+            this.quizVo.questionList[this.editedQuIndex] = {...this.qu};
             this.ifEdit = false;
             this.editedQuIndex = 0;
+        },
+        emitCloseUpdateQu(){
+            this.$emit("closeUpdateQu");
+        },
+        emitShowUpdateQn(){
+            this.$emit("showUpdateQn");
+        },
+        emitUpdatingQuizVo(){
+            this.$emit("emitUpdatingQuizVo", JSON.parse(JSON.stringify(this.quizVo)));
         }
-
     },
     watch: {
-        quTitle: function (quTitle) {
-            this.qu.quTitle = quTitle;
+        updatingQuizVoProp: function () {
+            this.quizVo = JSON.parse(JSON.stringify(this.updatingQuizVoProp));
+            this.qu.qnId = this.updatingQuizVoProp.questionnaire.id;
         },
-        optionType: function (optionType) {
-            this.qu.optionType = optionType;
-        },
-        necessary: function (necessary) {
-            this.qu.necessary = necessary;
-        },
-        option: function (option) {
-            this.qu.option = option;
-        },
-    },
-    components: {
-
-    },
+    }
 }
 </script>
 
 <template>
+    {{ "updatable:" + this.updatableProp }}
+    <br>
+    {{ updatingQuizVoProp }}
+    <br>
+    {{ "quizVo" }}
+    <br>
+    {{ quizVo }}
     <div>
-        <!-- {{ qu }}
-        <br>
-        {{ quList }}
-        <br>
-        {{ editedQuIndex }}
-        <br>
-        {{ selectedQu }} -->
         <div class="qu">
             <span>問題:</span>
-            <input type="text" v-model="quTitle">
+            <input type="text" v-model="qu.qTitle">
             <!-- {{ quTitle }} -->
             &nbsp
-            <select v-model="optionType">
+            <select v-model="qu.optionType">
                 <option>單選</option>
                 <option>多選</option>
                 <option>問答</option>
             </select>
             &nbsp
             <!-- {{ optionType }} -->
-            <input type="checkbox" id="necessary" v-model="necessary">
+            <input type="checkbox" id="necessary" v-model="qu.necessary">
             <label for="necessary">必填</label>
             <!-- {{ necessary }} -->
         </div>
@@ -116,7 +114,7 @@ export default {
         </div>
         <br>
         <div>
-            <input type="text" v-model="option">
+            <input type="text" v-model="qu.option">
             {{ option }}
             <input type="button" value="加入" @click="addQu()">
             &nbsp
@@ -139,22 +137,22 @@ export default {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(a, index) in quList">
+                    <tr v-for="(a, index) in quizVo.questionList">
                         <td><input type="checkbox" v-model="selectedQu[index]"></td>
                         <td>{{ index + 1 }}</td>
-                        <td>{{ a.quTitle }}</td>
+                        <td>{{ a.qTitle }}</td>
                         <td>{{ a.optionType }}</td>
                         <td>{{ a.necessary }}</td>
-                        <td><a href="javascript:void(0);" @click="edit(index, a.quTitle, a.optionType, a.necessary, a.option)">編輯</a></td>
+                        <td><a href="javascript:void(0);" @click="edit(index, a.qTitle, a.optionType, a.necessary, a.option)">編輯</a></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div>
-            <input type="button" value="上一步" @click="closeQuShow(), emitPopQn()">
+            <input type="button" value="上一步" @click="emitCloseUpdateQu() ,emitShowUpdateQn(), emitUpdatingQuizVo()">
             <!-- <input type="button" value="test上一步" @click="emitPopQn()">
             <input type="button" value="test送出" @click="emitQuList()"> -->
-            <input type="button" value="送出" @click="emitConfirmShow(), emitQuList()">
+            <input type="button" value="送出" @click="emitCloseUpdateQu()">
         </div>
     </div>
 </template>
@@ -193,3 +191,5 @@ caption {
     padding: 10px;
 }
 </style>
+
+

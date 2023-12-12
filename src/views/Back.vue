@@ -1,13 +1,15 @@
 <script>
 import AddQn from "./AddQn.vue";
 import Confirm from "./Confirm.vue";
+import UpdateQn from "./UpdateQn.vue";
+import UpdateQu from "./UpdateQu.vue";
+import UpdateConfirm from "./UpdateConfirm.vue";
 export default {
     data() {
         return {
             selectedRows: [],
             qn: {},
             quList: [],
-            // datas: [1, 1, 1, 11, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, , 1, 1, 1,],//要呈現的資料
             perpage: 10, //一頁的資料數
             currentPage: 1,
             qnShow: false,
@@ -21,7 +23,13 @@ export default {
             titleSearch: "",
             startDateSearch: "",
             endDateSearch: "",
-            comfirmCancleSignal:false,
+            confirmCancleSignal:false,
+            ifShowUpdataQn: false,
+            ifShowUpdataQu: false,
+            ifShowUpdataConfirm: false,
+            updatable: false,
+            selectedQuiz: {},
+            updatingQuizVo:{},
         }
     },
     computed: {
@@ -162,21 +170,53 @@ export default {
             },
             showConfirmOff() {
                 location.reload();
-                // this.confirmShow = false;
-                // this.backShow = true;
             },
-            comfirmCancle(){
+            confirmCancle(){
                 this.confirmShow = false;
-                this.comfirmCancleSignal = true;
+                this.confirmCancleSignal = true;
             },
-            comfirmCancleSuccess(){
-                this.comfirmCancleSignal = false;
-                console.log("comfirmCancleSuccess");
-            }
+            confirmCancleSuccess(){
+                this.confirmCancleSignal = false;
+                console.log("confirmCancleSuccess");
+            },
+            ifUpdatable(status) {
+                if (status == "未發布" || status == "未開始") {
+                    this.updatable = true;
+                }
+            },
+            selectQuiz(quiz){
+                this.selectedQuiz = quiz;
+            },
+            showUpdateQn(){
+                this.ifShowUpdataQn = true;
+            },
+            showBack(){
+                this.backShow = true;
+            },
+            closeBack(){
+                this.backShow = false;
+            },
+            closeUpdateQn(){
+                this.ifShowUpdataQn = false;
+            },
+            showUpdateQu(){
+                this.ifShowUpdataQu = true;
+            },
+            closeUpdateQu(){
+                this.ifShowUpdataQu = false;
+            },
+            getUpdatingQuizVo(quizVo){
+                this.updatingQuizVo = quizVo;
+            },
+
+
         },
         components: {
             AddQn,
-            Confirm
+            Confirm,
+            UpdateQn,
+            UpdateQu,
+            UpdateConfirm
         },
         mounted() {
             this.getQuizVoList();
@@ -198,11 +238,11 @@ export default {
     <!-- {{ confirmShow }} -->
     <!-- {{ selectedRows }} -->
     <div v-show="confirmShow">
-        <Confirm :quizVo="quizVo" @comfirmOff="showConfirmOff()" @comfirmCancle="comfirmCancle()"/>
+        <Confirm :quizVo="quizVo" @confirmOff="showConfirmOff()" @confirmCancle="confirmCancle()"/>
     </div>
     <div v-show="qnShow">
         <AddQn @addQn="getEmitQn" @closeQnShow="ifQnShow(), ifBackShow()" @popQn="popQn()" @addQuList="getEmitQuList"
-            @emitConfirmShow="showConfirm()" :comfirmCancleSignalProp="comfirmCancleSignal" @comfirmCancleSuccess="comfirmCancleSuccess()"/>
+            @emitConfirmShow="showConfirm()" :confirmCancleSignalProp="confirmCancleSignal" @confirmCancleSuccess="confirmCancleSuccess()"/>
     </div>
     <div v-show="backShow">
         <div class="header">
@@ -246,10 +286,8 @@ export default {
                     <tr v-for="(a, index) in [...quizVoList].reverse().slice(pageStart, pageEnd)" :key="a.questionnaire.id">
                         <td><input type="checkbox" v-model="selectedRows[a.questionnaire.id]"></td>
                         <td>{{ a.questionnaire.id }}</td>
-                        <td>{{ a.questionnaire.title }}</td>
-                        <!-- <td>{{ "published: " + a.questionnaire.published }}</td> -->
-                        <td>{{ getStatus(a.questionnaire.published, a.questionnaire.startDate, a.questionnaire.endDate) }}
-                        </td>
+                        <td><a href="javascript:void(0);" @click="showUpdateQn(), closeBack(), selectQuiz(a), ifUpdatable(getStatus(a.questionnaire.published, a.questionnaire.startDate, a.questionnaire.endDate))">{{ a.questionnaire.title }}</a></td>
+                        <td>{{ getStatus(a.questionnaire.published, a.questionnaire.startDate, a.questionnaire.endDate) }}</td>
                         <td>{{ a.questionnaire.startDate }}</td>
                         <td>{{ a.questionnaire.endDate }}</td>
                         <td>{{ "前往" }}</td>
@@ -277,6 +315,18 @@ export default {
                 </a>
             </div>
         </div>
+    </div>
+    <div v-show="ifShowUpdataQn">
+        <UpdateQn :updatableProp="updatable" :selectedQuizProp="selectedQuiz"
+        @closeUpdateQn="closeUpdateQn()" @showUpdateQu="showUpdateQu()" @showBack="showBack()"
+        @emitUpdatingQuizVo="getUpdatingQuizVo"/>
+    </div>
+    <div v-show="ifShowUpdataQu">
+        <UpdateQu :updatableProp="updatable" :updatingQuizVoProp="updatingQuizVo"
+        @closeUpdateQu="closeUpdateQu()" @showUpdateQn="showUpdateQn()" @emitUpdatingQuizVo="getUpdatingQuizVo"/>
+    </div>
+    <div v-show="ifShowUpdataConfirm">
+        <UpdateConfirm :updatableProp="updatable" :selectedQuizProp="selectedQuiz"/>
     </div>
 </template>
 
