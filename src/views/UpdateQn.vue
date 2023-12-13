@@ -2,7 +2,7 @@
 export default {
     props: [
         "updatableProp",
-        "selectedQuizProp",
+        "updatingQuizVoProp",
     ],
     data() {
         const today = new Date();
@@ -34,9 +34,9 @@ export default {
 
     },
     watch: {
-    selectedQuizProp: function () {
+        updatingQuizVoProp: function () {
         // 无需访问新旧值的逻辑
-        this.quizVo = JSON.parse(JSON.stringify(this.selectedQuizProp));
+        this.quizVo = JSON.parse(JSON.stringify(this.updatingQuizVoProp));
     },
     
 },
@@ -46,25 +46,25 @@ export default {
 <template>
     {{ "updatable:" + this.updatableProp }}
     <br>
-    {{ selectedQuizProp }}
+    {{ updatingQuizVoProp }}
     <br>
     {{ quizVo }}
     <div class="con">
         <div>
             <span>問卷名稱: </span>
-            <input type="text" v-model="quizVo.questionnaire.title">
+            <input type="text" v-model="quizVo.questionnaire.title" :readonly="!updatableProp">
         </div>
         <div>
             <span>問卷說明: </span>
-            <input type="text" v-model="quizVo.questionnaire.description">
+            <input type="text" v-model="quizVo.questionnaire.description" :readonly="!updatableProp">
         </div>
         <div>
             <span>開始時間: </span>
-            <input type="date" v-model="quizVo.questionnaire.startDate" :min="minDate">
+            <input type="date" v-model="quizVo.questionnaire.startDate" :min="minDate" :readonly="!updatableProp">
         </div>
         <div>
             <span>結束時間: </span>
-            <input type="date" v-model="quizVo.questionnaire.endDate">
+            <input type="date" v-model="quizVo.questionnaire.endDate" :readonly="!updatableProp">
         </div>
         <div class="buttonArea">
             <input type="button" value="取消" @click="emitCloseUpdateQn(), emitShowBack()">

@@ -24,9 +24,9 @@ export default {
             startDateSearch: "",
             endDateSearch: "",
             confirmCancleSignal:false,
-            ifShowUpdataQn: false,
-            ifShowUpdataQu: false,
-            ifShowUpdataConfirm: false,
+            ifShowUpdateQn: false,
+            ifShowUpdateQu: false,
+            ifShowUpdateConfirm: false,
             updatable: false,
             selectedQuiz: {},
             updatingQuizVo:{},
@@ -184,11 +184,11 @@ export default {
                     this.updatable = true;
                 }
             },
-            selectQuiz(quiz){
-                this.selectedQuiz = quiz;
+            updateQuiz(quiz){
+                this.updatingQuizVo = quiz;
             },
             showUpdateQn(){
-                this.ifShowUpdataQn = true;
+                this.ifShowUpdateQn = true;
             },
             showBack(){
                 this.backShow = true;
@@ -197,17 +197,23 @@ export default {
                 this.backShow = false;
             },
             closeUpdateQn(){
-                this.ifShowUpdataQn = false;
+                this.ifShowUpdateQn = false;
             },
             showUpdateQu(){
-                this.ifShowUpdataQu = true;
+                this.ifShowUpdateQu = true;
             },
             closeUpdateQu(){
-                this.ifShowUpdataQu = false;
+                this.ifShowUpdateQu = false;
             },
             getUpdatingQuizVo(quizVo){
                 this.updatingQuizVo = quizVo;
             },
+            showUpdateConfirm(){
+                this.ifShowUpdateConfirm = true;
+            },
+            closeUpdateConfirm(){
+                this.ifShowUpdateConfirm = false;
+            }
 
 
         },
@@ -286,7 +292,7 @@ export default {
                     <tr v-for="(a, index) in [...quizVoList].reverse().slice(pageStart, pageEnd)" :key="a.questionnaire.id">
                         <td><input type="checkbox" v-model="selectedRows[a.questionnaire.id]"></td>
                         <td>{{ a.questionnaire.id }}</td>
-                        <td><a href="javascript:void(0);" @click="showUpdateQn(), closeBack(), selectQuiz(a), ifUpdatable(getStatus(a.questionnaire.published, a.questionnaire.startDate, a.questionnaire.endDate))">{{ a.questionnaire.title }}</a></td>
+                        <td><a href="javascript:void(0);" @click="showUpdateQn(), closeBack(), updateQuiz(a), ifUpdatable(getStatus(a.questionnaire.published, a.questionnaire.startDate, a.questionnaire.endDate))">{{ a.questionnaire.title }}</a></td>
                         <td>{{ getStatus(a.questionnaire.published, a.questionnaire.startDate, a.questionnaire.endDate) }}</td>
                         <td>{{ a.questionnaire.startDate }}</td>
                         <td>{{ a.questionnaire.endDate }}</td>
@@ -316,17 +322,19 @@ export default {
             </div>
         </div>
     </div>
-    <div v-show="ifShowUpdataQn">
-        <UpdateQn :updatableProp="updatable" :selectedQuizProp="selectedQuiz"
+    <div v-show="ifShowUpdateQn">
+        <UpdateQn :updatableProp="updatable" :updatingQuizVoProp="updatingQuizVo"
         @closeUpdateQn="closeUpdateQn()" @showUpdateQu="showUpdateQu()" @showBack="showBack()"
         @emitUpdatingQuizVo="getUpdatingQuizVo"/>
     </div>
-    <div v-show="ifShowUpdataQu">
+    <div v-show="ifShowUpdateQu">
         <UpdateQu :updatableProp="updatable" :updatingQuizVoProp="updatingQuizVo"
-        @closeUpdateQu="closeUpdateQu()" @showUpdateQn="showUpdateQn()" @emitUpdatingQuizVo="getUpdatingQuizVo"/>
+        @closeUpdateQu="closeUpdateQu()" @showUpdateQn="showUpdateQn()" @emitUpdatingQuizVo="getUpdatingQuizVo"
+        @showUpdateConfirm="showUpdateConfirm()"/>
     </div>
-    <div v-show="ifShowUpdataConfirm">
-        <UpdateConfirm :updatableProp="updatable" :selectedQuizProp="selectedQuiz"/>
+    <div v-show="ifShowUpdateConfirm">
+        <UpdateConfirm :updatableProp="updatable" :updatingQuizVoProp="updatingQuizVo"
+        @closeUpdateConfirm="closeUpdateConfirm(), showUpdateQu()"/>
     </div>
 </template>
 

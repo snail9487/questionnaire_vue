@@ -7,19 +7,19 @@ export default {
         return {
             quizRequest:{
                 questionnaire: {
-                    title: "postmanCreateTest",
-                    description: "test",
+                    title: "",
+                    description: "",
                     published: true,
-                    startDate: "2023-11-28",
-                    endDate: "2023-11-30"
+                    startDate: "",
+                    endDate: ""
                 },
                 questionList: [
                     {
-                        quId: 1,
-                        qTitle: "postmanTest_test_question",
-                        optionType: "test",
+                        quId: 0,
+                        qTitle: "",
+                        optionType: "",
                         necessary: false,
-                        option: "updateABC"
+                        option: ""
                     }
                 ]
             },

@@ -71,6 +71,9 @@ export default {
         },
         emitUpdatingQuizVo(){
             this.$emit("emitUpdatingQuizVo", JSON.parse(JSON.stringify(this.quizVo)));
+        },
+        emitShowUpdateConfirm(){
+            this.$emit("showUpdateConfirm");
         }
     },
     watch: {
@@ -93,18 +96,18 @@ export default {
     <div>
         <div class="qu">
             <span>問題:</span>
-            <input type="text" v-model="qu.qTitle">
+            <input type="text" v-model="qu.qTitle" :disabled="!updatableProp">
             <!-- {{ quTitle }} -->
             &nbsp
-            <select v-model="qu.optionType">
+            <select v-model="qu.optionType" :disabled="!updatableProp">
                 <option>單選</option>
                 <option>多選</option>
                 <option>問答</option>
             </select>
             &nbsp
             <!-- {{ optionType }} -->
-            <input type="checkbox" id="necessary" v-model="qu.necessary">
-            <label for="necessary">必填</label>
+            <input type="checkbox" id="necessaryInUpdate" v-model="qu.necessary" :disabled="!updatableProp">
+            <label for="necessaryInUpdate">必填</label>
             <!-- {{ necessary }} -->
         </div>
         <br>
@@ -114,15 +117,15 @@ export default {
         </div>
         <br>
         <div>
-            <input type="text" v-model="qu.option">
+            <input type="text" v-model="qu.option" :disabled="!updatableProp">
             {{ option }}
-            <input type="button" value="加入" @click="addQu()">
+            <input type="button" value="加入" @click="addQu()" :disabled="!updatableProp">
             &nbsp
-            <input type="button" value="編輯完成" v-if="ifEdit" @click="editDone()">
+            <input type="button" value="編輯完成" v-if="ifEdit" @click="editDone()" :disabled="!updatableProp">
         </div>
         <br>
         <div class="deleteBtn">
-            <input type="button" value="刪除" @click="deleteQu()">
+            <input type="button" value="刪除" @click="deleteQu()" :disabled="!updatableProp">
         </div>
         <div>
             <table>
@@ -138,7 +141,7 @@ export default {
                 </thead>
                 <tbody>
                     <tr v-for="(a, index) in quizVo.questionList">
-                        <td><input type="checkbox" v-model="selectedQu[index]"></td>
+                        <td><input type="checkbox" v-model="selectedQu[index]" :disabled="!updatableProp"></td>
                         <td>{{ index + 1 }}</td>
                         <td>{{ a.qTitle }}</td>
                         <td>{{ a.optionType }}</td>
@@ -150,9 +153,7 @@ export default {
         </div>
         <div>
             <input type="button" value="上一步" @click="emitCloseUpdateQu() ,emitShowUpdateQn(), emitUpdatingQuizVo()">
-            <!-- <input type="button" value="test上一步" @click="emitPopQn()">
-            <input type="button" value="test送出" @click="emitQuList()"> -->
-            <input type="button" value="送出" @click="emitCloseUpdateQu()">
+            <input type="button" value="送出" @click="emitCloseUpdateQu(), emitUpdatingQuizVo(), emitShowUpdateConfirm()">
         </div>
     </div>
 </template>
@@ -191,5 +192,3 @@ caption {
     padding: 10px;
 }
 </style>
-
-
