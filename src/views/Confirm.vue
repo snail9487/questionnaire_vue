@@ -63,7 +63,8 @@ export default {
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-                    console.dir(data);
+                    alert(data.rtnCode);
+                    this.emitConfirmOff();
                 })
                 .catch(error => {
                     console.log(error);
@@ -82,7 +83,7 @@ export default {
 
 <template>
     <div class="con">
-        <!-- {{ quizVo }} -->
+        {{ quizVo }}
         <div>
             <h1>{{ "問卷標題: " + quizVo.qn.qnTitle }}</h1>
         </div>
@@ -142,7 +143,7 @@ export default {
                 {{ (a.quId = quIndex + 1) + '.' + a.quTitle }}
                 <span v-if="a.necessary" style="color: red;"> *</span>
                 <br>
-                <textarea rows="4" cols="50"></textarea>
+                <textarea rows="4" cols="50" :required="a.necessary"></textarea>
                 <br>
             </div>
         </div>
@@ -150,9 +151,9 @@ export default {
         <div>
             <input type="button" value="取消" @click="emitConfirmCancle()">
             &nbsp
-            <input type="button" value="僅儲存" @click="save(), emitConfirmOff()">
+            <input type="button" value="僅儲存" @click="save()">
             &nbsp
-            <input type="button" value="儲存並發布" @click="saveAndPublish(), emitConfirmOff()">
+            <input type="button" value="儲存並發布" @click="saveAndPublish()">
         </div>
         <br>
     </div>

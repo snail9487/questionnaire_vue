@@ -125,7 +125,7 @@ export default {
             {{ a.quId + '.' + a.qTitle }}
             <span v-if="a.necessary" style="color: red;"> *</span>
             <br>
-            <textarea rows="4" cols="50" ></textarea>
+            <textarea rows="4" cols="50" :required="a.necessary"></textarea>
             <br>
         </div>
     </div>

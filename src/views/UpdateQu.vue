@@ -118,7 +118,7 @@ export default {
         <br>
         <div>
             <input type="text" v-model="qu.option" :disabled="!updatableProp">
-            {{ option }}
+            {{ qu.option }}
             <input type="button" value="加入" @click="addQu()" :disabled="!updatableProp">
             &nbsp
             <input type="button" value="編輯完成" v-if="ifEdit" @click="editDone()" :disabled="!updatableProp">

@@ -27,13 +27,11 @@ export default {
             this.quizRequest.questionnaire.published = false;
             this.removeQnId();
             this.update();
-            this.refresh();
         },
         saveAndPublish() {
             this.quizRequest.questionnaire.published = true;
             this.removeQnId();
             this.update();
-            this.refresh();
         },
         update() {
             let deleteQn = [];
@@ -67,8 +65,9 @@ export default {
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-                    console.dir(data);
-                    console.log("create")
+                    alert(data.rtnCode);
+                    console.log("create");
+                    this.refresh();
                 })
                 .catch(error => {
                     console.log(error);
@@ -156,7 +155,7 @@ export default {
                 {{ (a.quId = quIndex + 1) + '.' + a.qTitle }}
                 <span v-if="a.necessary" style="color: red;"> *</span>
                 <br>
-                <textarea rows="4" cols="50"></textarea>
+                <textarea rows="4" cols="50" :required="a.necessary"></textarea>
                 <br>
             </div>
         </div>
